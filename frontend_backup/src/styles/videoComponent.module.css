@@ -2,15 +2,34 @@
     position: relative;
     height: 100vh;
     background: rgb(1, 4, 48);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-.meetUserVideo {
+/* Main local video — large, centered */
+.mainVideo {
+    width: 70vw;
+    max-height: 75vh;
+    border-radius: 16px;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Participant count badge */
+.participantCount {
     position: absolute;
-    bottom: 10vh;
-    height: 20vh;
-    width: auto;
-    left: 0;
+    top: 16px;
+    left: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 8px 16px;
     border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    z-index: 10;
+    backdrop-filter: blur(8px);
 }
 
 .buttonContainers {
@@ -18,35 +37,51 @@
     width: 100vw;
     bottom: 0;
     text-align: center;
+    z-index: 10;
+    padding-bottom: 12px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.5));
 }
 
 .buttonContainers svg {
-    font-size: 3rem;
+    font-size: 2.4rem;
 }
 
-.conferenceView { 
-
+/* Remote participant thumbnails */
+.conferenceView {
+    position: absolute;
+    bottom: 70px;
+    left: 16px;
     display: flex;
-    
-    padding: 10px;
     gap: 10px;
+    z-index: 5;
+    overflow-x: auto;
+    max-width: calc(100vw - 32px);
+    padding: 4px;
 }
 
-.conferenceView  video {
-    width: 40vw;
-    height: 20vh;
-    min-width: 30vw;
+.remoteVideoWrapper {
+    flex-shrink: 0;
+}
+
+.conferenceView video {
+    width: 160px;
+    height: 120px;
     border-radius: 10px;
+    object-fit: cover;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
 
 .chatRoom {
     position: absolute;
     height: 90vh;
     right: 0;
+    top: 0;
     background: white;
     border-radius: 10px;
     width: 30vw;
     padding-inline: 20px;
+    z-index: 20;
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.3);
 }
 
 .chatContainer {
@@ -54,8 +89,26 @@
     height: 100%;
 }
 
+.chattingDisplay {
+    height: calc(100% - 120px);
+    overflow-y: auto;
+    padding-top: 10px;
+}
 
 .chattingArea {
     position: absolute;
-    bottom: 0;
+    bottom: 10px;
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+/* Legacy — kept for backwards compatibility but no longer used */
+.meetUserVideo {
+    position: absolute;
+    bottom: 10vh;
+    height: 20vh;
+    width: auto;
+    left: 0;
+    border-radius: 20px;
 }

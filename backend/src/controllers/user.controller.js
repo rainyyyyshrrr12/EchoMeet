@@ -1,9 +1,11 @@
 import httpStatus from "http-status";
 import { User } from "../models/user.model.js";
 import bcrypt, { hash } from "bcrypt"
-
 import crypto from "crypto"
 import { Meeting } from "../models/meeting.model.js";
+import { OAuth2Client } from "google-auth-library";
+
+const googleClient = new OAuth2Client();
 const login = async (req, res) => {
 
     const { username, password } = req.body;
@@ -97,5 +99,49 @@ const addToHistory = async (req, res) => {
     }
 }
 
+const googleLogin = async (req, res) => {
+    const { credential, clientId } = req.body;
 
-export { login, register, getUserHistory, addToHistory }
+    if (!credential) {
+        return res.status(400).json({ message: "Google credential is required" });
+    }
+
+    try {
+        // Verify the Google token
+        const ticket = await googleClient.verifyIdToken({
+            idToken: credential,
+            audience: clientId
+        });
+
+        const payload = ticket.getPayload();
+        const { sub: googleId, email, name } = payload;
+
+        // Find existing user by googleId or email
+        let user = await User.findOne({ $or: [{ googleId: googleId }, { username: email }] });
+
+        if (!user) {
+            // Create new user
+            user = new User({
+                name: name,
+                username: email,
+                googleId: googleId
+            });
+        } else if (!user.googleId) {
+            // Link Google account to existing user
+            user.googleId = googleId;
+        }
+
+        // Generate auth token
+        let token = crypto.randomBytes(20).toString("hex");
+        user.token = token;
+        await user.save();
+
+        return res.status(httpStatus.OK).json({ token: token });
+    } catch (e) {
+        console.log("Google auth error:", e);
+        return res.status(500).json({ message: `Google authentication failed: ${e.message}` });
+    }
+}
+
+
+export { login, register, getUserHistory, addToHistory, googleLogin }

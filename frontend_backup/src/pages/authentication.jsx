@@ -13,7 +13,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AuthContext } from '../contexts/AuthContext';
-import { Snackbar } from '@mui/material';
+import { Snackbar, Divider } from '@mui/material';
+import { GoogleLogin } from '@react-oauth/google';
 
 
 
@@ -23,7 +24,7 @@ const defaultTheme = createTheme();
 
 export default function Authentication() {
 
-    
+
 
     const [username, setUsername] = React.useState();
     const [password, setPassword] = React.useState();
@@ -37,7 +38,7 @@ export default function Authentication() {
     const [open, setOpen] = React.useState(false)
 
 
-    const { handleRegister, handleLogin } = React.useContext(AuthContext);
+    const { handleRegister, handleLogin, handleGoogleLogin } = React.useContext(AuthContext);
 
     let handleAuth = async () => {
         try {
@@ -158,6 +159,21 @@ export default function Authentication() {
                                 {formState === 0 ? "Login " : "Register"}
                             </Button>
 
+                        </Box>
+
+                        <Divider sx={{ width: '100%', my: 2 }}>OR</Divider>
+
+                        <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                            <GoogleLogin
+                                onSuccess={handleGoogleLogin}
+                                onError={() => {
+                                    setError('Google login failed. Please try again.');
+                                }}
+                                theme="filled_blue"
+                                size="large"
+                                width="350"
+                                text={formState === 0 ? "signin_with" : "signup_with"}
+                            />
                         </Box>
                     </Box>
                 </Grid>
