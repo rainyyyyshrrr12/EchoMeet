@@ -122,8 +122,8 @@ const googleLogin = async (req, res) => {
         if (!user) {
             // Create new user
             user = new User({
-                name: name,
-                username: email,
+                name: name || "Google User",
+                username: email || googleId,
                 googleId: googleId
             });
         } else if (!user.googleId) {

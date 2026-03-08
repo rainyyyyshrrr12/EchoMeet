@@ -62,7 +62,7 @@ export const AuthProvider = ({ children }) => {
         try {
             let request = await client.post("/google-login", {
                 credential: credentialResponse.credential,
-                clientId: credentialResponse.clientId
+                clientId: credentialResponse.clientId || import.meta.env.VITE_GOOGLE_CLIENT_ID
             });
 
             if (request.status === httpStatus.OK) {

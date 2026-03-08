@@ -165,7 +165,14 @@ export default function Authentication() {
 
                         <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
                             <GoogleLogin
-                                onSuccess={handleGoogleLogin}
+                                onSuccess={async (credentialResponse) => {
+                                    try {
+                                        await handleGoogleLogin(credentialResponse);
+                                    } catch (err) {
+                                        console.log(err);
+                                        setError(err.response?.data?.message || 'Google login failed on server. Please try again.');
+                                    }
+                                }}
                                 onError={() => {
                                     setError('Google login failed. Please try again.');
                                 }}
